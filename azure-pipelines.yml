@@ -1,0 +1,24 @@
+# This YAML file defines a CI/CD pipeline configuration to automate the process of copying files from a source directory to a target directory
+# and publishing them as build artifacts.
+
+# Trigger section specifies when the pipeline should be triggered.
+trigger:
+- main  # Trigger the pipeline when changes are pushed to the 'main' branch of the repository.
+
+# Pool section defines where the pipeline runs. This one runs on the latest Ubuntu version.
+pool:
+  vmImage: 'ubuntu-latest'  # Use an Ubuntu virtual machine as the execution environment for the pipeline.
+
+# Steps section defines what tasks to run in the pipeline.
+steps:
+- task: CopyFiles@2  # Define a task to copy files.
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)'  # Specify the source folder from where files will be copied.
+    Contents: '**'  # Specify to copy all files and folders from the source folder.
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'  # Specify the target folder where files will be copied.
+
+- task: PublishBuildArtifacts@1  # Define a task to publish build artifacts.
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'  # Specify the path of the directory containing the artifacts to be published.
+    ArtifactName: 'drop'  # Specify the name of the artifact.
+    publishLocation: 'Container'  # Specify where to publish the artifacts within the CI/CD pipeline.
